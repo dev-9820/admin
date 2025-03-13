@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>Admin Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -14,392 +14,814 @@
 
         body {
             background-color: #f5f5f5;
-            padding-top: 60px; /* Space for fixed header */
         }
 
-        .audio-section {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 2rem;
-            grid-column: span 2;
-        }
-
-        .audio-section h2 {
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .audio-player {
+        /* Auth Styles */
+        .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
         }
 
-        .audio-player audio {
+        .auth-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 400px;
         }
 
-        /* News Ticker */
-        .news-ticker {
-            background-color: #1a73e8;
+        .auth-form h2 {
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #2c3e50;
             color: white;
-            padding: 0.75rem 0;
-            overflow: hidden;
-            position: relative;
-            white-space: nowrap;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
         }
 
-        .ticker-content {
-            display: inline-block;
-            animation: ticker 20s linear infinite;
-            padding-left: 100%;
+        .auth-btn:hover {
+            background-color: #34495e;
         }
 
-        @keyframes ticker {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-100%);
-            }
+        .switch-form {
+            text-align: center;
+            margin-top: 1rem;
+            color: #666;
         }
 
-        /* Dashboard Layout */
+        .switch-form a {
+            color: #2c3e50;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Dashboard Styles */
         .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
             display: block;
         }
 
         /* Header */
         .dashboard-header {
-            background-color: #1a73e8;
+            background-color: #2c3e50;
             color: white;
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
         }
 
-        /* Main Dashboard Container */
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Main Container */
+        .container {
             padding: 2rem;
-            margin-top: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Updates Section */
-        .updates-section {
+        /* Form Sections */
+        .form-section {
             background: white;
+            padding: 2rem;
             border-radius: 8px;
-            padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-height: 600px;
-            overflow-y: auto;
+            margin-bottom: 2rem;
         }
 
-        .updates-section h2 {
-            color: #333;
+        .form-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .datetime-inputs {
+            display: flex;
+            gap: 1rem;
             margin-bottom: 1rem;
-            position: sticky;
-            top: 0;
+        }
+        
+        .datetime-inputs input {
+            flex: 1;
+        }
+
+        /* Updates List */
+        .updates-list {
             background: white;
-            padding: 0.5rem 0;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .update-item {
             padding: 1rem;
             border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .update-item:last-child {
             border-bottom: none;
         }
 
-        .update-item h3 {
-            color: #1a73e8;
+        .update-content {
+            flex-grow: 1;
+        }
+
+        .update-content h3 {
+            color: #2c3e50;
             margin-bottom: 0.5rem;
         }
 
-        .update-item p {
+        .update-content p {
             color: #666;
             font-size: 0.9rem;
-            line-height: 1.5;
         }
-
-        .update-date {
-            color: #999;
+        
+        .update-expires {
+            color: #e74c3c;
             font-size: 0.8rem;
-            margin-top: 0.5rem;
+            font-weight: bold;
         }
 
-        /* Media Section */
-        .media-section {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .update-actions button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 0.5rem;
         }
 
-        .media-container {
-            width: 100%;
-            position: relative;
-            height: 300px;
-            overflow: hidden;
+        /* Media Preview */
+        .media-preview {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
         }
 
         .media-item {
+            position: relative;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.5rem;
+        }
+
+        .media-item img, .media-item video {
             width: 100%;
-            height: 100%;
+            height: 150px;
             object-fit: cover;
             border-radius: 4px;
+        }
+
+        .media-delete {
             position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 1s ease;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
         }
-
-        .media-item.active {
-            opacity: 1;
-        }
-
-        .media-caption {
-            margin-top: 1rem;
+        
+        .media-expiry {
+            font-size: 0.8rem;
             color: #666;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            text-align: center;
+            margin-top: 0.5rem;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
+        .success-message {
+            background-color: #2ecc71;
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .audio-preview {
+            margin-top: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .audio-preview audio {
+            max-width: 300px;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        /* News list styles */
+        #newsList {
+            margin-top: 1rem;
+        }
+        
+        .news-item {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .news-text {
+            flex-grow: 1;
+        }
+        
+        .news-expires {
+            font-size: 0.8rem;
+            color: #e74c3c;
+            margin-left: 1rem;
         }
     </style>
 </head>
 <body>
+    <!-- Auth Container -->
+    <div class="auth-container" id="authContainer">
+        <form class="auth-form" id="authForm">
+            <h2 id="authTitle">Admin Login</h2>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="form-group" id="nameField" style="display: none;">
+                <label for="name">Full Name</label>
+                <input type="text" id="name">
+            </div>
+            <button type="submit" class="auth-btn" id="authButton">Login</button>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="switch-form">
+                <span id="switchText">Don't have an account?</span>
+                <a id="switchForm">Sign up</a>
+            </div>
+        </form>
+    </div>
+
     <!-- Dashboard -->
     <div class="dashboard" id="dashboard">
-        <!-- Header -->
         <div class="dashboard-header">
-            <h1>Student Dashboard</h1>
+            <h1>Admin Dashboard</h1>
+            <div class="user-info">
+                <span id="userName"></span>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
         </div>
 
-        <!-- News Ticker -->
-        <div class="news-ticker">
-            <div class="ticker-content" id="tickerContent">Loading news...</div>
-        </div>
-
-        <!-- Main Dashboard Container -->
-        <div class="dashboard-container">
-            <!-- Updates Section -->
-            <div class="updates-section">
-                <h2>Important Updates</h2>
-                <div id="updatesList">Loading updates...</div>
+        <div class="container">
+            <div class="success-message" id="successMessage">
+                Changes saved successfully!
             </div>
 
-            <!-- Media Section -->
-            <div class="media-section">
-                <div class="media-container" id="mediaContainer">
-                    <!-- Media items will be inserted here -->
+            <!-- News Ticker Form -->
+            <div class="form-section">
+                <h2>Update News Ticker</h2>
+                <form id="newsForm">
+                    <div class="form-group">
+                        <label for="newsContent">News Content</label>
+                        <input type="text" id="newsContent" required>
+                    </div>
+                    <div class="datetime-inputs">
+                        <div class="form-group">
+                            <label for="newsExpiry">Expiry Date & Time</label>
+                            <input type="datetime-local" id="newsExpiry" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn">Add News</button>
+                </form>
+                <div id="newsList">
+                    <!-- Current news items will be listed here -->
                 </div>
-                <p class="media-caption">Campus News and Updates</p>
             </div>
 
-            <div class="audio-section">
-                <h2>Campus Audio Announcements</h2>
-                <div id="audioPlayer" class="audio-player">
-                    <!-- Audio player will be added here -->
-                </div>
+            <!-- Updates Form -->
+            <div class="form-section">
+                <h2>Add New Update</h2>
+                <form id="updateForm">
+                    <div class="form-group">
+                        <label for="updateTitle">Title</label>
+                        <input type="text" id="updateTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateContent">Content</label>
+                        <textarea id="updateContent" required></textarea>
+                    </div>
+                    <div class="datetime-inputs">
+                        <div class="form-group">
+                            <label for="updateExpiry">Expiry Date & Time</label>
+                            <input type="datetime-local" id="updateExpiry" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="notifyStudents" checked>
+                            Play notification sound for students
+                        </label>
+                    </div>
+                    <button type="submit" class="auth-btn">Add Update</button>
+                </form>
+            </div>
+
+            <!-- Media Upload -->
+            <div class="form-section">
+                <h2>Media Management</h2>
+                <form id="mediaForm">
+                    <div class="form-group">
+                        <label for="mediaFile">Upload Image or Video</label>
+                        <input type="file" id="mediaFile" accept="image/*,video/*" required>
+                    </div>
+                    <div class="datetime-inputs">
+                        <div class="form-group">
+                            <label for="mediaExpiry">Expiry Date & Time</label>
+                            <input type="datetime-local" id="mediaExpiry" required>
+                        </div>
+                    </div>
+                    <div class="media-preview" id="mediaPreview">
+                        <!-- Current media will be shown here -->
+                    </div>
+                    <button type="submit" class="auth-btn">Upload Media</button>
+                </form>
+            </div>
+            
+            <div class="form-section">
+                <h2>Audio Management</h2>
+                <form id="audioForm">
+                    <div class="form-group">
+                        <label for="audioFile">Upload New Audio</label>
+                        <input type="file" id="audioFile" accept="audio/*" required>
+                    </div>
+                    <div class="datetime-inputs">
+                        <div class="form-group">
+                            <label for="audioExpiry">Expiry Date & Time</label>
+                            <input type="datetime-local" id="audioExpiry" required>
+                        </div>
+                    </div>
+                    <div class="audio-preview" id="audioPreview">
+                        <!-- Current audio will be shown here -->
+                    </div>
+                    <button type="submit" class="auth-btn">Upload Audio</button>
+                </form>
+            </div>
+            
+            <!-- Current Updates List -->
+            <div class="updates-list">
+                <h2>Current Updates</h2>
+                <div id="updatesList"></div>
             </div>
         </div>
     </div>
-    <audio id="notificationSound" src="buzzer.mp3" preload="auto"></audio>
+
     <script>
-        // DOM Elements
-        const tickerContent = document.getElementById('tickerContent');
-        const updatesList = document.getElementById('updatesList');
-        const mediaContainer = document.getElementById('mediaContainer');
-        const notificationSound = document.getElementById('notificationSound');
-        
-        // Store previous updates length for comparison
-        let previousUpdatesLength = 0;
-        let currentMediaIndex = 0;
-        let mediaRotationInterval;
-        
-        // Function to rotate media
-        function rotateMedia() {
-            const mediaItems = document.querySelectorAll('.media-item');
-            if (mediaItems.length === 0) return;
-            
-            // Hide all media items
-            mediaItems.forEach(item => item.classList.remove('active'));
-            
-            // Show the current one
-            mediaItems[currentMediaIndex].classList.add('active');
-            
-            // Update index for next rotation
-            currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
+        // Initialize localStorage
+        if (!localStorage.getItem('adminUsers')) {
+            localStorage.setItem('adminUsers', JSON.stringify([]));
         }
+        if (!localStorage.getItem('dashboardUpdates')) {
+            localStorage.setItem('dashboardUpdates', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('dashboardMediaArray')) {
+            localStorage.setItem('dashboardMediaArray', JSON.stringify([]));
+        }
+        if (!localStorage.getItem('newsArray')) {
+            localStorage.setItem('newsArray', JSON.stringify([]));
+        }
+
+        // DOM Elements
+        const authContainer = document.getElementById('authContainer');
+        const dashboard = document.getElementById('dashboard');
+        const authForm = document.getElementById('authForm');
+        const authTitle = document.getElementById('authTitle');
+        const authButton = document.getElementById('authButton');
+        const nameField = document.getElementById('nameField');
+        const switchForm = document.getElementById('switchForm');
+        const switchText = document.getElementById('switchText');
+        const errorMessage = document.getElementById('errorMessage');
+        const userName = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const successMessage = document.getElementById('successMessage');
+
+        let isLogin = true;
         
-        // Start media rotation
-        function startMediaRotation() {
-            // Stop any existing interval
-            if (mediaRotationInterval) {
-                clearInterval(mediaRotationInterval);
+        // Audio Form Handler
+        document.getElementById('audioForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('audioFile').files[0];
+            const expiry = document.getElementById('audioExpiry').value;
+            
+            if (!expiry) {
+                showError('Please set an expiry date and time');
+                return;
             }
             
-            // Initial show
-            rotateMedia();
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const audioData = {
+                        src: e.target.result,
+                        expiry: new Date(expiry).toISOString(),
+                        createdAt: new Date().toISOString()
+                    };
+                    localStorage.setItem('dashboardAudio', JSON.stringify(audioData));
+                    showSuccess();
+                    loadCurrentAudio();
+                }
+                reader.readAsDataURL(file);
+            }
+            this.reset();
+        });
+
+        // Load and display current audio
+        function loadCurrentAudio() {
+            const audioPreview = document.getElementById('audioPreview');
+            const audioData = JSON.parse(localStorage.getItem('dashboardAudio') || 'null');
             
-            // Set interval for rotation - every 30 seconds
-            mediaRotationInterval = setInterval(rotateMedia, 30000);
+            if (audioData) {
+                const expiryDate = new Date(audioData.expiry);
+                const expiryFormatted = expiryDate.toLocaleString();
+                
+                audioPreview.innerHTML = `
+                    <audio controls>
+                        <source src="${audioData.src}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    <div class="media-expiry">Expires: ${expiryFormatted}</div>
+                    <button class="media-delete" onclick="deleteAudio()">&times;</button>
+                `;
+            } else {
+                audioPreview.innerHTML = '';
+            }
+        }
+
+        // Delete audio
+        function deleteAudio() {
+            localStorage.removeItem('dashboardAudio');
+            loadCurrentAudio();
+            showSuccess();
         }
         
-        // Render news ticker content
-        function renderNewsTicker() {
+        // News Form Handler
+        document.getElementById('newsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newsContent = document.getElementById('newsContent').value;
+            const expiry = document.getElementById('newsExpiry').value;
+            
+            if (!expiry) {
+                showError('Please set an expiry date and time');
+                return;
+            }
+            
             const newsArray = JSON.parse(localStorage.getItem('newsArray') || '[]');
+            newsArray.push({
+                content: newsContent,
+                expiry: new Date(expiry).toISOString(),
+                createdAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('newsArray', JSON.stringify(newsArray));
+            showSuccess();
+            this.reset();
+            renderNewsItems();
+        });
+        
+        // Render news items
+        function renderNewsItems() {
+            const newsArray = JSON.parse(localStorage.getItem('newsArray') || '[]');
+            const newsList = document.getElementById('newsList');
             
             // Filter out expired news
             const activeNews = newsArray.filter(item => new Date(item.expiry) > new Date());
             
-            if (activeNews.length > 0) {
-                // Join all news items with a separator
-                tickerContent.textContent = activeNews.map(item => item.content).join(' • ');
-            } else {
-                tickerContent.textContent = 'Welcome to the Student Dashboard';
-            }
+            newsList.innerHTML = activeNews.map((item, index) => `
+                <div class="news-item">
+                    <div class="news-text">${item.content}</div>
+                    <div class="news-expires">Expires: ${new Date(item.expiry).toLocaleString()}</div>
+                    <button onclick="deleteNews(${index})" class="update-actions">Delete</button>
+                </div>
+            `).join('');
         }
         
-        // Check for new content and updates
-        function checkForUpdates() {
-            // Render news ticker
-            renderNewsTicker();
-            
-            // Check for updates and handle notifications
-            const currentUpdates = JSON.parse(localStorage.getItem('dashboardUpdates') || '[]');
-            
-            // Filter out expired updates
-            const activeUpdates = currentUpdates.filter(update => 
-                new Date(update.expiry || '2099-12-31') > new Date()
-            );
-            
-            // Play sound if there are new updates that require notification
-            const newUpdates = activeUpdates.length - previousUpdatesLength;
-            if (newUpdates > 0) {
-                // Check if any of the new updates have notification enabled
-                const shouldNotify = activeUpdates
-                    .slice(0, newUpdates)
-                    .some(update => update.notify);
-                
-                if (shouldNotify) {
-                    notificationSound.play().catch(error => {
-                        console.error('Error playing notification:', error);
-                    });
+        // Delete news item
+        function deleteNews(index) {
+            const newsArray = JSON.parse(localStorage.getItem('newsArray') || '[]');
+            newsArray.splice(index, 1);
+            localStorage.setItem('newsArray', JSON.stringify(newsArray));
+            renderNewsItems();
+            showSuccess();
+        }
+        
+        // Toggle between login and signup
+        function toggleForm() {
+            isLogin = !isLogin;
+            authTitle.textContent = isLogin ? 'Admin Login' : 'Admin Signup';
+            authButton.textContent = isLogin ? 'Login' : 'Sign Up';
+            nameField.style.display = isLogin ? 'none' : 'block';
+            switchText.textContent = isLogin ? "Don't have an account?" : 'Already have an account?';
+            switchForm.textContent = isLogin ? 'Sign up' : 'Login';
+            errorMessage.style.display = 'none';
+        }
+
+        // Handle authentication
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const adminUsers = JSON.parse(localStorage.getItem('adminUsers'));
+
+            if (isLogin) {
+                // Login
+                const user = adminUsers.find(u => u.email === email && u.password === password);
+                if (user) {
+                    loginSuccess(user);
+                } else {
+                    showError('Invalid email or password');
                 }
+            } else {
+                // Signup
+                const name = document.getElementById('name').value;
+
+                if (!name) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                if (adminUsers.some(u => u.email === email)) {
+                    showError('Email already registered');
+                    return;
+                }
+
+                const newUser = { email, password, name };
+                adminUsers.push(newUser);
+                localStorage.setItem('adminUsers', JSON.stringify(adminUsers));
+                loginSuccess(newUser);
+            }
+        }
+
+        function loginSuccess(user) {
+            userName.textContent = `Welcome, ${user.name || user.email}`;
+            authContainer.style.display = 'none';
+            dashboard.classList.add('active');
+            resetForm();
+            loadCurrentMedia();
+            loadCurrentAudio();
+            renderUpdates();
+            renderNewsItems();
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function resetForm() {
+            authForm.reset();
+            errorMessage.style.display = 'none';
+        }
+
+        // Show success message
+        function showSuccess() {
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        // Updates Form Handler
+        document.getElementById('updateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('updateTitle').value;
+            const content = document.getElementById('updateContent').value;
+            const expiry = document.getElementById('updateExpiry').value;
+            const notify = document.getElementById('notifyStudents').checked;
+            
+            if (!expiry) {
+                showError('Please set an expiry date and time');
+                return;
             }
             
-            // Update the previous length
-            previousUpdatesLength = activeUpdates.length;
+            const updates = JSON.parse(localStorage.getItem('dashboardUpdates'));
+            updates.unshift({ 
+                title, 
+                content, 
+                date: new Date().toISOString(),
+                expiry: new Date(expiry).toISOString(),
+                notify
+            });
+            localStorage.setItem('dashboardUpdates', JSON.stringify(updates));
             
-            // Render updates
-            renderUpdates(activeUpdates);
+            showSuccess();
+            this.reset();
+            renderUpdates();
+        });
+
+        // Media Form Handler
+        document.getElementById('mediaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('mediaFile').files[0];
+            const expiry = document.getElementById('mediaExpiry').value;
             
-            // Handle media
-            renderMedia();
+            if (!expiry) {
+                showError('Please set an expiry date and time');
+                return;
+            }
             
-            // Check for audio
-            renderAudio();
-        }
-        
-        // Render media to the dashboard
-        function renderMedia() {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const mediaArray = JSON.parse(localStorage.getItem('dashboardMediaArray') || '[]');
+                    mediaArray.push({
+                        src: e.target.result,
+                        type: file.type.startsWith('video') ? 'video' : 'image',
+                        expiry: new Date(expiry).toISOString(),
+                        createdAt: new Date().toISOString()
+                    });
+                    localStorage.setItem('dashboardMediaArray', JSON.stringify(mediaArray));
+                    showSuccess();
+                    loadCurrentMedia();
+                }
+                reader.readAsDataURL(file);
+            }
+            this.reset();
+        });
+
+        // Load and display current media
+        function loadCurrentMedia() {
+            const mediaPreview = document.getElementById('mediaPreview');
             const mediaArray = JSON.parse(localStorage.getItem('dashboardMediaArray') || '[]');
             
             // Filter out expired media
             const activeMedia = mediaArray.filter(item => new Date(item.expiry) > new Date());
             
-            // Reset container
-            mediaContainer.innerHTML = '';
-            
             if (activeMedia.length > 0) {
-                activeMedia.forEach((item, index) => {
-                    const mediaElement = document.createElement(item.type === 'video' ? 'video' : 'img');
-                    mediaElement.src = item.src;
-                    mediaElement.className = 'media-item';
+                mediaPreview.innerHTML = activeMedia.map((item, index) => {
+                    const mediaEl = item.type === 'video' ? 
+                        `<video src="${item.src}" controls></video>` : 
+                        `<img src="${item.src}" alt="Media ${index+1}">`;
                     
-                    // Add controls for video
-                    if (item.type === 'video') {
-                        mediaElement.controls = true;
-                        mediaElement.autoplay = false;
-                    }
-                    
-                    mediaContainer.appendChild(mediaElement);
-                });
-                
-                // Start the rotation
-                startMediaRotation();
+                    return `
+                        <div class="media-item">
+                            ${mediaEl}
+                            <div class="media-expiry">Expires: ${new Date(item.expiry).toLocaleString()}</div>
+                            <button class="media-delete" onclick="deleteMedia(${index})">&times;</button>
+                        </div>
+                    `;
+                }).join('');
             } else {
-                const placeholderImg = document.createElement('img');
-                placeholderImg.src = '/api/placeholder/800/450';
-                placeholderImg.alt = 'No media available';
-                placeholderImg.className = 'media-item active';
-                mediaContainer.appendChild(placeholderImg);
-            }
-        }
-        
-        // Render audio player
-        function renderAudio() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const audioData = JSON.parse(localStorage.getItem('dashboardAudio') || 'null');
-            
-            if (audioData && new Date(audioData.expiry) > new Date()) {
-                audioPlayer.innerHTML = `
-                    <audio controls>
-                        <source src="${audioData.src}" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                `;
-            } else {
-                audioPlayer.innerHTML = '<p>No audio announcements available</p>';
+                mediaPreview.innerHTML = '<p>No active media</p>';
             }
         }
 
-        // Render updates to the dashboard
-        function renderUpdates(updates) {
-            if (updates.length === 0) {
-                updatesList.innerHTML = '<p>No updates available</p>';
-                return;
-            }
+        // Delete media
+        function deleteMedia(index) {
+            const mediaArray = JSON.parse(localStorage.getItem('dashboardMediaArray') || '[]');
+            mediaArray.splice(index, 1);
+            localStorage.setItem('dashboardMediaArray', JSON.stringify(mediaArray));
+            loadCurrentMedia();
+            showSuccess();
+        }
+
+        // Delete Update
+        function deleteUpdate(index) {
+            const updates = JSON.parse(localStorage.getItem('dashboardUpdates'));
+            updates.splice(index, 1);
+            localStorage.setItem('dashboardUpdates', JSON.stringify(updates));
+            renderUpdates();
+            showSuccess();
+        }
+
+        // Render Updates
+        function renderUpdates() {
+            const updates = JSON.parse(localStorage.getItem('dashboardUpdates'));
+            const updatesList = document.getElementById('updatesList');
             
-            updatesList.innerHTML = updates.map(update => `
+            // Filter out expired updates
+            const activeUpdates = updates.filter(update => new Date(update.expiry || '2099-12-31') > new Date());
+            
+            updatesList.innerHTML = activeUpdates.map((update, index) => `
                 <div class="update-item">
-                    <h3>${update.title}</h3>
-                    <p>${update.content}</p>
-                    <div class="update-date">
-                        ${new Date(update.date).toLocaleDateString()}
+                    <div class="update-content">
+                        <h3>${update.title}</h3>
+                        <p>${update.content}</p>
+                        <small>${new Date(update.date).toLocaleString()}</small>
+                        ${update.expiry ? `<div class="update-expires">Expires: ${new Date(update.expiry).toLocaleString()}</div>` : ''}
+                    </div>
+                    <div class="update-actions">
+                        <button onclick="deleteUpdate(${index})">Delete</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Initial check and set interval
-        checkForUpdates();
-        setInterval(checkForUpdates, 10000);
+        // Event Listeners
+        switchForm.addEventListener('click', toggleForm);
+        authForm.addEventListener('submit', handleAuth);
+        logoutBtn.addEventListener('click', function() {
+            dashboard.classList.remove('active');
+            authContainer.style.display = 'flex';
+            resetForm();
+        });
+
+        // Media preview on file select
+        document.getElementById('mediaFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewEl = document.createElement('div');
+                    previewEl.className = 'media-item';
+                    
+                    if (file.type.startsWith('video')) {
+                        previewEl.innerHTML = `<video src="${e.target.result}" controls></video>`;
+                    } else {
+                        previewEl.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    }
+                    
+                    document.getElementById('mediaPreview').innerHTML = '';
+                    document.getElementById('mediaPreview').appendChild(previewEl);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Initialize displays
+        renderUpdates();
     </script>
 </body>
 </html>
